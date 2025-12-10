@@ -28,6 +28,39 @@ def User2Turn(board):
     board[pos - 1] = 1
 
 
+def minmax(board, player):
+    x = analyseboard(board)
+    if x != 0:
+        return x * player
+    pos = -1
+    value = -2
+    for i in range(0, 9):
+        if board[i] == 0:
+            board[i] = player
+            score = -minmax(board, player * -1)
+            board[i] = 0
+            if score > value:
+                value = score
+                pos = i
+    if pos == -1:
+        return 0
+    return value
+
+
+def CompTurn(board):
+    pos = -1
+    value = -2
+    for i in range(0, 9):
+        if board[i] == 0:
+            board[i] = 1
+            score = -minmax(board, -1)
+            board[i] = 0
+            if score > value:
+                value = score
+                pos = i
+    board[pos] = 1
+
+
 def analyseboard(board):
     cb = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
           [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -42,17 +75,29 @@ def analyseboard(board):
 
 
 def main():
-    print("2 Player Game:-  ")
+    choice = int(input("Enter 1 for single player or 2 for Multi-Player Game: "))
     board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    for i in range(0, 9):
-        if analyseboard(board) != 0:
-            break
-        if i % 2 == 0:
-            ConstBoard(board)
-            User1Turn(board)
-        else:
-            ConstBoard(board)
-            User2Turn(board)
+    if choice == 1:
+        print("Computer: O Vs. You: X")
+        player = int(input("Enter to play 1(st) or 2(nd): "))
+        for i in range(0, 9):
+            if analyseboard(board) != 0:
+                break
+            if (i + player) % 2 == 0:
+                CompTurn(board)
+            else:
+                ConstBoard(board)
+                User1Turn(board)
+    else:
+        for i in range(0, 9):
+            if analyseboard(board) != 0:
+                break
+            if i % 2 == 0:
+                ConstBoard(board)
+                User1Turn(board)
+            else:
+                ConstBoard(board)
+                User2Turn(board)
 
     x = analyseboard(board)
     if x == 0:
